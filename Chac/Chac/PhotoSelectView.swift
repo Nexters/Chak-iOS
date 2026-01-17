@@ -46,6 +46,7 @@ struct PhotoSelectView: View {
                 .foregroundStyle(.gray)
 
             }
+            .padding(.horizontal, 20)
             
             ScrollView {
                 LazyVGrid(columns: columns) {
@@ -60,13 +61,9 @@ struct PhotoSelectView: View {
                             }
                     }
                 }
+                .padding(.horizontal, 20)
             }
-            .padding(.bottom, 64)
             
-        }
-        .padding(.horizontal, 20)
-        .padding(.top, 12)
-        .overlay(alignment: .bottom) {
             Button {
                 moveToPhotoSaveView = true
             } label: {
@@ -82,7 +79,9 @@ struct PhotoSelectView: View {
             .padding(.horizontal, 20)
             .padding(.vertical, 10)
             .background(.white)
+            
         }
+        .padding(.top, 12)
         .navigationTitle("사진 선택")
         .fullScreenCover(isPresented: $moveToPhotoSaveView) {
             PhotoSaveView()
