@@ -8,6 +8,13 @@
 import SwiftUI
 
 struct PhotoSelectView: View {
+    
+    private enum Strings {
+        static let selectAll = "전체 선택"
+        static let selectPhoto = "사진 선택"
+        static let selectPhotoDescription = "사진을 선택해주세요"
+    }
+    
     @State private var moveToPhotoSaveView = false
     @State private var moveToPhotoDetailView = false
     
@@ -35,7 +42,7 @@ struct PhotoSelectView: View {
                 Button {
                     
                 } label: {
-                    Text("전체 선택")
+                    Text(Strings.selectAll)
                         .padding(.horizontal, 10)
                         .padding(.vertical, 5)
                         .background(
@@ -67,7 +74,7 @@ struct PhotoSelectView: View {
             Button {
                 moveToPhotoSaveView = true
             } label: {
-                Text("사진을 선택해주세요")
+                Text(Strings.selectPhotoDescription)
                     .foregroundStyle(.black.opacity(0.7))
                     .padding(.vertical, 12)
                     .frame(maxWidth: .infinity)
@@ -82,7 +89,7 @@ struct PhotoSelectView: View {
             
         }
         .padding(.top, 12)
-        .navigationTitle("사진 선택")
+        .navigationTitle(Strings.selectPhoto)
         .fullScreenCover(isPresented: $moveToPhotoSaveView) {
             PhotoSaveView()
         }

@@ -8,6 +8,14 @@
 import SwiftUI
 
 struct PhotoSaveView: View {
+    
+    private enum Strings {
+        static let completeSave = "저장 완료"
+        static let moveToGallery = "갤러리로"
+        static let moveToPhotoList = "목록으로"
+    }
+    
+    
     @Environment(\.dismiss) var dismiss
     
     var body: some View {
@@ -32,7 +40,7 @@ struct PhotoSaveView: View {
                 .background(.gray)
                 .padding(20)
             
-            Text("저장 완료")
+            Text(Strings.completeSave)
                 .font(.system(size: 20, weight: .semibold))
                 .padding(.bottom, 8)
                 .foregroundStyle(.black)
@@ -47,13 +55,13 @@ struct PhotoSaveView: View {
             HStack(spacing: 8) {
                 
                 moveButton(
-                    title: "갤러리로",
+                    title: Strings.moveToGallery,
                     backgroundColor: Color(uiColor: .lightGray)) {
                     
                 }
                 
                 moveButton(
-                    title: "목록으로",
+                    title: Strings.moveToPhotoList,
                     backgroundColor: .gray) {
                     
                 }
