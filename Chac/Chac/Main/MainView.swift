@@ -13,7 +13,6 @@ struct MainView: View {
     private enum Strings {
         static let allPhotos = "모든 사진"
         static let createAlbum = "앨범 생성"
-        static let loadingDescription = "앨범을 생성하는 중입니다.\n잠시만 기다려주세요!"
     }
     
     private enum Metric {
@@ -25,7 +24,22 @@ struct MainView: View {
     @EnvironmentObject private var coordinator: NavigationCoordinator
 
     var body: some View {
-        VStack {
+        VStack(spacing: 0) {
+            HStack {
+                Text("로고/서비스 네임")
+                Spacer()
+                Button {
+                    // TODO: 설정 화면으로 이동
+                } label: {
+                    Image("setting_icon")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 24, height: 24)
+                }
+            }
+            .frame(height: 52)
+            .padding(.horizontal, Metric.horizontalPadding)
+
             HStack {
                 Text(Strings.allPhotos)
                 Spacer()
@@ -36,6 +50,7 @@ struct MainView: View {
             .frame(maxWidth: .infinity)
             .background(ColorPalette.gray)
             .cornerRadius(Metric.cornerRadius)
+            .padding(.top, 12)
             .padding(.horizontal, Metric.horizontalPadding)
             
             HStack {
@@ -62,8 +77,7 @@ struct MainView: View {
                 }
                 .padding(.horizontal, Metric.horizontalPadding)
             }
-            
-            Spacer()
+            .padding(.top, 15)
         }
     }
 }
