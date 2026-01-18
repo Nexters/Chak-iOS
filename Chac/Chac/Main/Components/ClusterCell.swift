@@ -55,7 +55,6 @@ struct ClusterCell: View {
             .padding(.bottom, 22)
         }
         .padding(.horizontal, 20)
-        .frame(maxWidth: .infinity)
         .background(ColorPalette.gray)
         .cornerRadius(4)
     }
