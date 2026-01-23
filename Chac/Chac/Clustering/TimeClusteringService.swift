@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// 시간 간격을 기반으로 사진을 그룹화
 final class TimeClusteringService: ClusteringStrategy {
     var minClusterSize: Int
     private let interval: TimeInterval
@@ -19,7 +20,7 @@ final class TimeClusteringService: ClusteringStrategy {
         self.interval = interval
     }
     
-    func cluster(assets: [PhotoAsset]) -> [[PhotoAsset]] {
+    func cluster(assets: [PhotoAsset]) async -> [[PhotoAsset]] {
         guard !assets.isEmpty else { return [] }
         
         let sortedAssets = assets.sorted(by: { $0.creationDate < $1.creationDate })
