@@ -26,6 +26,7 @@ struct MainView: View {
         static let createAlbumIconSize: CGFloat = 16
     }
     
+    @Environment(\.scenePhase) private var scenePhase
     @EnvironmentObject private var coordinator: NavigationCoordinator
     @EnvironmentObject private var permissionManager: DefaultPhotoLibraryPermissionManager
     @EnvironmentObject private var photoLibraryStore: PhotoLibraryStore
@@ -88,9 +89,12 @@ struct MainView: View {
             }
             .padding(.top, 15)
         }
-        .onAppear {
-            handlePermissionStatus(permissionManager.permissionStatus)
-        }
+        .onChange(of: scenePhase, { _, newValue in
+            switch newValue {
+            case .active: handlePermissionStatus(permissionManager.permissionStatus)
+            default:      break
+            }
+        })
         .onChange(of: permissionManager.permissionStatus) { _, newValue in
             handlePermissionStatus(newValue)
         }
