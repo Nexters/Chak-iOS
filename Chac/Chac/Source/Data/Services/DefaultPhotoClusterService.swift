@@ -28,9 +28,20 @@ final class DefaultPhotoClusterService: PhotoClusterService {
                 
                 // 병렬 처리를 위한 TaskGroup
                 await withTaskGroup(of: Void.self) { group in
+                    var activeTasks = 0
+                    let maxTasks = 3  // 동시에 실행할 최대 작업 수
+                    
                     for await timeGroup in timeGroups {
+                        // 실행 중인 작업이 너무 많으면 하나가 끝날 때까지 대기
+                        if activeTasks >= maxTasks {
+                            await group.next()
+                            activeTasks -= 1
+                        }
+                        
                         // 각 시간 그룹마다 새로운 자식 Task 추가
                         group.addTask {
+                            activeTasks += 1
+                            
                             // 공간 기반 2차 그룹화
                             let locationGroups = await self.locationService.cluster(assets: timeGroup)
                             

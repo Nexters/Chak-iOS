@@ -43,16 +43,17 @@ final class PhotoLibraryStore: ObservableObject {
     private func processClustering() async {
         guard !photos.isEmpty else { return }
         
-        Task {
+        Task(priority: .utility) {  // UI보다 낮은 우선순위
             let stream = clusterService.clusterPhotos(photos)
             
             for await newCluster in stream {
                 await MainActor.run {
-                    print("📸 새 클러스터 도착: \(newCluster.title) - \(Date())")
                     withAnimation(.easeIn) {
                         self.clusters.append(newCluster)
                     }
                 }
+                
+                try? await Task.sleep(for: .seconds(0.2))
             }
         }
     }
