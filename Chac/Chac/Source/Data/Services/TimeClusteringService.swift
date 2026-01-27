@@ -34,7 +34,7 @@ final class TimeClusteringService: ClusteringStrategy {
                   let prevAssetDate = previousAsset.creationDate else { break }
             
             // 시간 차이가 임계값(3시간) 이내인지 확인
-            if curAssetDate.timeIntervalSince(prevAssetDate) <= interval {
+            if prevAssetDate.timeIntervalSince(curAssetDate) <= interval {
                 currentCluster.append(currentAsset)
             } else {
                 // 임계값을 초과하면, 클러스터가 최소 크기(20개)를 만족할 때만 추가
