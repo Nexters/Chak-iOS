@@ -1,6 +1,7 @@
 import Foundation
 import Photos
 import UIKit
+import SwiftUI
 
 @MainActor
 final class PhotoLibraryStore: ObservableObject {
@@ -41,7 +42,18 @@ final class PhotoLibraryStore: ObservableObject {
     
     private func processClustering() async {
         guard !photos.isEmpty else { return }
-        let clusters = await clusterService.clusterPhotos(photos)
-        self.clusters = clusters
+        
+        Task {
+            let stream = clusterService.clusterPhotos(photos)
+            
+            for await newCluster in stream {
+                await MainActor.run {
+                    print("📸 새 클러스터 도착: \(newCluster.title) - \(Date())")
+                    withAnimation(.easeIn) {
+                        self.clusters.append(newCluster)
+                    }
+                }
+            }
+        }
     }
 }

@@ -16,3 +16,12 @@ protocol ClusteringStrategy {
     /// - Returns: 그룹화된 사진들의 2차원 배열
     func cluster(assets: [PHAsset]) async -> [[PHAsset]]
 }
+
+// 1. 시간 기반 (스트리밍)
+protocol StreamingStrategy {
+    /// 클러스터로 인정되기 위한 최소 사진 개수
+    var minClusterSize: Int { get }
+    
+    func cluster(assets: [PHAsset]) -> AsyncStream<[PHAsset]>
+}
+
