@@ -5,7 +5,7 @@
 //  Created by 가은 on 1/24/26.
 //
 
-import Foundation
+import Photos
 
 /// 시간 간격을 기반으로 사진을 그룹화
 final class TimeClusteringService: ClusteringStrategy {
@@ -20,20 +20,21 @@ final class TimeClusteringService: ClusteringStrategy {
         self.interval = interval
     }
     
-    func cluster(assets: [PhotoAsset]) async -> [[PhotoAsset]] {
+    func cluster(assets: [PHAsset]) async -> [[PHAsset]] {
         guard !assets.isEmpty else { return [] }
         
-        let sortedAssets = assets.sorted(by: { $0.creationDate < $1.creationDate })
+        var clusters: [[PHAsset]] = []
+        var currentCluster: [PHAsset] = [assets[0]]
         
-        var clusters: [[PhotoAsset]] = []
-        var currentCluster: [PhotoAsset] = [sortedAssets[0]]
-        
-        for i in 1..<sortedAssets.count {
-            let previousAsset = sortedAssets[i-1]
-            let currentAsset = sortedAssets[i]
+        for i in 1..<assets.count {
+            let previousAsset = assets[i-1]
+            let currentAsset = assets[i]
+            
+            guard let curAssetDate = currentAsset.creationDate,
+                  let prevAssetDate = previousAsset.creationDate else { break }
             
             // 시간 차이가 임계값(3시간) 이내인지 확인
-            if currentAsset.creationDate.timeIntervalSince(previousAsset.creationDate) <= interval {
+            if curAssetDate.timeIntervalSince(prevAssetDate) <= interval {
                 currentCluster.append(currentAsset)
             } else {
                 // 임계값을 초과하면, 클러스터가 최소 크기(20개)를 만족할 때만 추가

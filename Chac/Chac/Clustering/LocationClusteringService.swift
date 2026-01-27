@@ -5,7 +5,7 @@
 //  Created by 가은 on 1/24/26.
 //
 
-import Foundation
+import Photos
 
 /// 위치 정보를 기반으로 사진을 그룹화
 final class LocationClusteringService: ClusteringStrategy {
@@ -27,18 +27,18 @@ final class LocationClusteringService: ClusteringStrategy {
         self.minPoints = minPoints
     }
     
-    func cluster(assets: [PhotoAsset]) async -> [[PhotoAsset]] {
+    func cluster(assets: [PHAsset]) async -> [[PHAsset]] {
         // 위치 정보가 있는 사진만 필터링
         let assetsWithLocation = assets.filter { $0.location != nil }
         guard !assetsWithLocation.isEmpty else { return [] }
         
         var visited = Set<String>()
-        var clusters: [[PhotoAsset]] = []
+        var clusters: [[PHAsset]] = []
         
         for asset in assetsWithLocation {
             // 이미 방문한 사진은 건너뜁니다.
-            if visited.contains(asset.id) { continue }
-            visited.insert(asset.id)
+            if visited.contains(asset.localIdentifier) { continue }
+            visited.insert(asset.localIdentifier)
             
             let neighbors = findNeighbors(target: asset, in: assetsWithLocation)
             
@@ -47,7 +47,7 @@ final class LocationClusteringService: ClusteringStrategy {
             
             // 이웃이 충분한 경우,
             // 새로운 클러스터를 생성하고 주변으로 확장
-            var newCluster: [PhotoAsset] = [asset]
+            var newCluster: [PHAsset] = [asset]
             expandCluster(
                 newCluster: &newCluster,
                 neighbors: neighbors,
@@ -69,13 +69,13 @@ final class LocationClusteringService: ClusteringStrategy {
     ///   - target: 반경 계산의 중심이 되는 기준 사진
     ///   - allAssets: 위치 정보를 가진 전체 사진 배열 (비교 대상)
     /// - Returns: 기준 사진으로부터 설정된 거리(m) 이내에 있는 이웃 사진들의 배열
-    private func findNeighbors(target: PhotoAsset, in allAssets: [PhotoAsset]) -> [PhotoAsset] {
+    private func findNeighbors(target: PHAsset, in allAssets: [PHAsset]) -> [PHAsset] {
         guard let targetLocation = target.location else { return [] }
         
         return allAssets.filter { other in
             // 1. 위치 정보가 있고, 2. 자기 자신이 아닌 사진만 필터링
             guard let otherLocation = other.location,
-                  target.id != other.id else { return false }
+                  target.localIdentifier != other.localIdentifier else { return false }
             
             // 두 지점 사이의 실제 거리(m) 계산
             let distanceInMeters = targetLocation.distance(from: otherLocation)
@@ -92,9 +92,9 @@ final class LocationClusteringService: ClusteringStrategy {
     ///   - allAssets: 위치 정보가 있는 전체 사진 목록
     ///   - visited: 이미 방문 처리된 사진의 고유 ID 집합
     private func expandCluster(
-        newCluster: inout [PhotoAsset],
-        neighbors: [PhotoAsset],
-        allAssets: [PhotoAsset],
+        newCluster: inout [PHAsset],
+        neighbors: [PHAsset],
+        allAssets: [PHAsset],
         visited: inout Set<String>
     ) {
         var queue = neighbors
@@ -105,8 +105,8 @@ final class LocationClusteringService: ClusteringStrategy {
             index += 1
             
             // 이미 방문했다면 패스
-            if visited.contains(neighbor.id) { continue }
-            visited.insert(neighbor.id)
+            if visited.contains(neighbor.localIdentifier) { continue }
+            visited.insert(neighbor.localIdentifier)
             
             // 현재 이웃을 클러스터에 추가
             newCluster.append(neighbor)
@@ -117,7 +117,7 @@ final class LocationClusteringService: ClusteringStrategy {
             // 핵심 지점(Core Point)이라면 대기열에 추가
             if nextNeighbors.count >= minPoints {
                 for next in nextNeighbors {
-                    if !visited.contains(next.id) {
+                    if !visited.contains(next.localIdentifier) {
                         queue.append(next)
                     }
                 }

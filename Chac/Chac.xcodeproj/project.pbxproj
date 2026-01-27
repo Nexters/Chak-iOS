@@ -11,7 +11,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		AF73E6BA2F1E5FC500FE6F9B /* Exceptions for "Chac" folder in "Chac" target */ = {
+		23E4387B2F28D9EA00C9D2B1 /* Exceptions for "Chac" folder in "Chac" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Resource/Info.plist,
@@ -24,7 +24,7 @@
 		370E33AA2F0FD67E00CE0A0D /* Chac */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				AF73E6BA2F1E5FC500FE6F9B /* Exceptions for "Chac" folder in "Chac" target */,
+				23E4387B2F28D9EA00C9D2B1 /* Exceptions for "Chac" folder in "Chac" target */,
 			);
 			path = Chac;
 			sourceTree = "<group>";
