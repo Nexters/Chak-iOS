@@ -38,10 +38,10 @@ final class DefaultPhotoClusterService: PhotoClusterService {
                             activeTasks -= 1
                         }
                         
+                        activeTasks += 1
+                        
                         // 각 시간 그룹마다 새로운 자식 Task 추가
                         group.addTask {
-                            activeTasks += 1
-                            
                             // 공간 기반 2차 그룹화
                             let locationGroups = self.locationService.cluster(assets: timeGroup)
                             
