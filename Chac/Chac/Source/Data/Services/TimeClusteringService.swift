@@ -22,42 +22,40 @@ final class TimeClusteringService: StreamingStrategy {
     
     func cluster(assets: [PHAsset]) -> AsyncStream<[PHAsset]> {
         AsyncStream { continuation in
-            Task {
-                guard !assets.isEmpty else {
-                    continuation.finish()
-                    return
-                }
-                
-                var currentCluster: [PHAsset] = [assets[0]]
-                
-                for i in 1..<assets.count {
-                    let previousAsset = assets[i-1]
-                    let currentAsset = assets[i]
-                    
-                    guard let curAssetDate = currentAsset.creationDate,
-                          let prevAssetDate = previousAsset.creationDate else { continue }
-                    
-                    // 시간 차이가 임계값(3시간) 이내인지 확인
-                    if prevAssetDate.timeIntervalSince(curAssetDate) <= interval {
-                        currentCluster.append(currentAsset)
-                    } else {
-                        // 임계값을 초과하면, 즉시 yield로 방출
-                        if currentCluster.count >= minClusterSize {
-                            continuation.yield(currentCluster)
-                        }
-                        
-                        // 새로운 그룹 시작
-                        currentCluster = [currentAsset]
-                    }
-                }
-                
-                // 루프 종료 후 마지막 그룹 처리 및 방출
-                if currentCluster.count >= minClusterSize {
-                    continuation.yield(currentCluster)
-                }
-                
+            guard !assets.isEmpty else {
                 continuation.finish()
+                return
             }
+            
+            var currentCluster: [PHAsset] = [assets[0]]
+            
+            for i in 1..<assets.count {
+                let previousAsset = assets[i-1]
+                let currentAsset = assets[i]
+                
+                guard let curAssetDate = currentAsset.creationDate,
+                      let prevAssetDate = previousAsset.creationDate else { continue }
+                
+                // 시간 차이가 임계값(3시간) 이내인지 확인
+                if prevAssetDate.timeIntervalSince(curAssetDate) <= interval {
+                    currentCluster.append(currentAsset)
+                } else {
+                    // 임계값을 초과하면, 즉시 yield로 방출
+                    if currentCluster.count >= minClusterSize {
+                        continuation.yield(currentCluster)
+                    }
+                    
+                    // 새로운 그룹 시작
+                    currentCluster = [currentAsset]
+                }
+            }
+            
+            // 루프 종료 후 마지막 그룹 처리 및 방출
+            if currentCluster.count >= minClusterSize {
+                continuation.yield(currentCluster)
+            }
+            
+            continuation.finish()
         }
         
     }
